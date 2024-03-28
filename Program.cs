@@ -24,18 +24,18 @@ namespace GorbInuch
 
             //удаление курсора
             Console.CursorVisible = false;
-
+           
             //инициализация экрана
             for (int i = 0; i < ScreenH; i++)
             {
                 for (int j = 0; j < ScreenW; j++)
                 {
-                    if (i==0||i==ScreenH-1)
+                    if (i == 0 || i == ScreenH - 1)
                     {
                         screen[i, j] = '-';
                         continue;
                     }
-                    if (j==0||j==ScreenW-1)
+                    if (j == 0 || j == ScreenW - 1)
                     {
                         screen[i, j] = '|';
                         continue;
@@ -43,13 +43,10 @@ namespace GorbInuch
                     screen[i, j] = ' ';
                 }
             }
-            
+
             ThreadInput.Start();
-            
+
             gameplay(screen);
-
-
-            
 
             Thread.Sleep(1000);
         }
@@ -77,22 +74,21 @@ namespace GorbInuch
 
         static void gameplay(char[,] screen)
         {
-            //надо ли?
-            int snake_length = 3;
-            
+            int slength = 3;
+            sbyte[,] snake = new sbyte[slength,2];
+            for (int i = 0; i < snake.GetLength(0); i++)
+            {
+                snake[i, 0] = 1;
+                snake[i, 1] = 0;
+            }
 
             //кодры хвоста
-            int cordendx = 1,
-                cordendy = screen.GetLength(0) / 2;
+            int cordendx, cordendy;
 
 
             //корды спавна головы змеи
             int corhx = 4, 
                 corhy = screen.GetLength(0) / 2;
-
-            
-            
-
 
             //корды яблока
             int corax, coray;
@@ -103,21 +99,46 @@ namespace GorbInuch
             //спавн змеи
             screen[corhy, corhx] = '%';
             for (int i = 1; i <= 3; i++)
-            {
                 screen[corhy, corhx-i] = '*';
-            }
             
             bool IsDead = false;
             while (!IsDead)
             {
                 Console.Clear();
                 test(screen);
+                cordendx = corhx;
+                cordendy = corhy;
 
                 corhy += vecty;
                 corhx += vectx;
                 
 
+                
                 screen[corhy, corhx] = '%';
+                for (int i = 0; i < snake.GetLength(0); i++)
+                {
+                    screen[cordendy,cordendx] = '*';
+                    cordendx -= snake[i, 0];
+                    cordendy -= snake[i, 1];
+                }
+
+                screen[cordendy, cordendx] = ' ';
+                sbyte tempx = snake[0, 0], tempy = snake[0, 1];
+                for (int i = 1; i < snake.GetLength(0); i++)
+                {
+                    snake[0, 0] = snake[i, 0];
+                    snake[0, 1] = snake[i, 1];
+
+                    snake[i, 0] = tempx;
+                    snake[i, 1] = tempy;
+
+                    tempx = snake[0, 0];
+                    tempy = snake[0, 1];
+                }
+
+                snake[0, 0] = vectx;
+                snake[0, 1] = vecty;
+                /*
                 screen[corhy- vecty, corhx- vectx] = '*';
                 screen[cordendy, cordendx] = ' ';
 
@@ -134,7 +155,9 @@ namespace GorbInuch
                     cordendy--;
 
                 screen[cordendy, cordendx] = '*';
-                /*for (int temp = snake_length; temp!=0;)
+                */
+                /*
+                for (int temp = snake_length; temp!=0;)
                 {
                     int i = vectx, j = vecty;
                     screen[corhy-j, corhx-i] = '*';
@@ -144,9 +167,7 @@ namespace GorbInuch
                 */
 
                 if (corhx == 0||corhy==0||corhx==screen.GetLength(1)-1||corhy==screen.GetLength(0) - 1)
-                {
                     IsDead = true;
-                }
             }
         }
         
