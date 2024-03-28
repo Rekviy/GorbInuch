@@ -11,9 +11,9 @@ namespace GorbInuch
 {
     internal class Program
     {
-        //нужно ли удалить down?
-        static bool up, down, left, right,
-                    changed = false;
+        // направление
+        static sbyte vectx = 1,
+                     vecty = 0;
         static void Main(string[] args)
         {
             
@@ -90,9 +90,7 @@ namespace GorbInuch
             int corhx = 4, 
                 corhy = screen.GetLength(0) / 2;
 
-            // направление
-            sbyte vectx = 1,
-                  vecty = 0;
+            
             
 
 
@@ -115,32 +113,6 @@ namespace GorbInuch
                 Console.Clear();
                 test(screen);
 
-                //смена направления
-                if (changed == true)
-                {
-                    if (right)
-                    {
-                        vectx = 1;
-                        vecty = 0;
-                    }
-                    else if(left)
-                    {
-                        vectx = -1;
-                        vecty = 0;
-                    }
-                    else if(up)
-                    {
-                        vectx = 0;
-                        vecty = -1;
-                    }
-                    else
-                    {
-                        vectx = 0;
-                        vecty = 1;
-                    }
-                    up = down = right = left = changed = false;
-                }
-
                 corhy += vecty;
                 corhx += vectx;
                 
@@ -150,21 +122,17 @@ namespace GorbInuch
                 screen[cordendy, cordendx] = ' ';
 
                 if (screen[cordendy, cordendx + 1] =='*')
-                {
                     cordendx++;
-                }
+
                 else if(screen[cordendy, cordendx - 1] == '*')
-                {
                     cordendx--;
-                }
+
                 else if (screen[cordendy + 1, cordendx] == '*')
-                {
                     cordendy++;
-                }
-                else 
-                {
+
+                else
                     cordendy--;
-                }
+
                 screen[cordendy, cordendx] = '*';
                 /*for (int temp = snake_length; temp!=0;)
                 {
@@ -192,26 +160,26 @@ namespace GorbInuch
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.W:
-                        up = true;
-                        changed = true;
+                        vectx = 0;
+                        vecty = -1;
                         break;
 
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.S:
-                        down = true;
-                        changed = true;
+                        vectx = 0;
+                        vecty = 1;
                         break;
 
                     case ConsoleKey.RightArrow:
                     case ConsoleKey.D:
-                        right = true;
-                        changed = true;
+                        vectx = 1;
+                        vecty = 0;
                         break;
 
                     case ConsoleKey.LeftArrow:
                     case ConsoleKey.A:
-                        left = true;
-                        changed = true;
+                        vectx = -1;
+                        vecty = 0;
                         break;
 
                     case ConsoleKey.Escape:
