@@ -6,49 +6,77 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace GorbInuch
 {
+    class Snake
+    {
+        private sbyte Svecx = 1;
+        private sbyte Svecy = 0;
+
+        public void SetSvecx(sbyte x)
+        {
+            Svecx = x;
+        }
+        public void SetSvecy(sbyte y)
+        {
+            Svecy = y;
+        }
+        public sbyte GetSvecx()
+        {
+            return Svecx;
+        }
+        public sbyte GetSvecy()
+        {
+            return Svecy;
+        }
+    }
     internal class Program
     {
         // направление
-        static sbyte vectx = 1,
-                     vecty = 0;
+        static sbyte vectx, vecty;
         static void Main(string[] args)
         {
-            
             const int ScreenW = 20, ScreenH = 10;
             char[,] screen = new char[ScreenH, ScreenW];
-
+            
             Thread ThreadInput = new Thread(movement);
+            ThreadInput.Start();
 
             //удаление курсора
             Console.CursorVisible = false;
-           
-            //инициализация экрана
-            for (int i = 0; i < ScreenH; i++)
+            do
             {
-                for (int j = 0; j < ScreenW; j++)
+                //инициализация экрана
+                for (int i = 0; i < ScreenH; i++)
                 {
-                    if (i == 0 || i == ScreenH - 1)
+                    for (int j = 0; j < ScreenW; j++)
                     {
-                        screen[i, j] = '-';
-                        continue;
+                        if (i == 0 || i == ScreenH - 1)
+                        {
+                            screen[i, j] = '-';
+                            continue;
+                        }
+                        if (j == 0 || j == ScreenW - 1)
+                        {
+                            screen[i, j] = '|';
+                            continue;
+                        }
+                        screen[i, j] = ' ';
+                        Console.Write(screen[i, j]);
                     }
-                    if (j == 0 || j == ScreenW - 1)
-                    {
-                        screen[i, j] = '|';
-                        continue;
-                    }
-                    screen[i, j] = ' ';
+                    Console.WriteLine();
                 }
-            }
+                vectx = 1;
+                vecty = 0;
 
-            ThreadInput.Start();
+                gameplay(ref screen);
 
-            gameplay(screen);
-
-            Thread.Sleep(1000);
+                Console.WriteLine("Game Over");//Временно
+                Console.WriteLine("Начать новую игру? Y/N");
+            } while (Console.ReadKey(true).Key == ConsoleKey.Y);
+            
         }
 
         //Выводит экран с надписью змейка символами
@@ -72,105 +100,81 @@ namespace GorbInuch
             
         }
 
-        static void gameplay(char[,] screen)
+        static void gameplay(ref char[,] screen)
         {
             int slength = 3;
-            sbyte[,] snake = new sbyte[slength,2];
-            for (int i = 0; i < snake.GetLength(0); i++)
-            {
-                snake[i, 0] = 1;
-                snake[i, 1] = 0;
-            }
-
-            //кодры хвоста
-            int cordendx, cordendy;
-
+            Snake[] body = new Snake[slength];
+            for (int i = 0; i < body.Length; i++)
+                body[i] = new Snake();
 
             //корды спавна головы змеи
-            int corhx = 4, 
-                corhy = screen.GetLength(0) / 2;
-
+            int headx = slength+1, 
+                heady = screen.GetLength(0) / 2;
+            //корды хвоста
+            int tailx,
+                taily;
             //корды яблока
-            int corax, coray;
-
+            int applex=0, appley=0;
+            
             //спавн яблока
-            SpawnApple(screen, corhx, corhy,out corax,out coray);
+            SpawnApple(screen, headx, heady, slength, ref applex,ref appley);
 
             //спавн змеи
-            screen[corhy, corhx] = '%';
-            for (int i = 1; i <= 3; i++)
-                screen[corhy, corhx-i] = '*';
-            
-            bool IsDead = false;
-            while (!IsDead)
+            screen[heady, headx] = '%';
+            for (int i = 1; i <= slength; i++)
+                screen[heady, headx-i] = '*';
+                        
+            while (true)
             {
+                Show(screen);
+                sbyte local_vectx= vectx, local_vecty= vecty;
+                tailx = headx;
+                taily = heady;
+
+                heady += local_vecty;
+                headx += local_vectx;
+                if (heady==applex&&headx==appley)
+                {
+                    AppleEaten(ref body);
+                    SpawnApple(screen, headx, heady, slength, ref applex, ref appley);
+                    
+                }
+                UpdateScreen(ref screen, body, headx, heady, tailx, taily);
+
+                sbyte tempx = body[0].GetSvecx(), tempy = body[0].GetSvecy();
+                sbyte temp;
+                for (int i = 1; i < body.Length; i++)
+                {
+                    temp = body[i].GetSvecx();
+                    body[i].SetSvecx(tempx);
+                    tempx = temp;
+
+                    temp = body[i].GetSvecy();
+                    body[i].SetSvecy(tempy);
+                    tempy = temp;
+                }
+
+                body[0].SetSvecx(local_vectx);
+                body[0].SetSvecy(local_vecty);
+                
+                if (headx == 0||heady==0||headx==screen.GetLength(1)-1||heady==screen.GetLength(0) - 1)
+                    break;
                 Console.Clear();
-                test(screen);
-                cordendx = corhx;
-                cordendy = corhy;
-
-                corhy += vecty;
-                corhx += vectx;
-                
-
-                
-                screen[corhy, corhx] = '%';
-                for (int i = 0; i < snake.GetLength(0); i++)
-                {
-                    screen[cordendy,cordendx] = '*';
-                    cordendx -= snake[i, 0];
-                    cordendy -= snake[i, 1];
-                }
-
-                screen[cordendy, cordendx] = ' ';
-                sbyte tempx = snake[0, 0], tempy = snake[0, 1];
-                for (int i = 1; i < snake.GetLength(0); i++)
-                {
-                    snake[0, 0] = snake[i, 0];
-                    snake[0, 1] = snake[i, 1];
-
-                    snake[i, 0] = tempx;
-                    snake[i, 1] = tempy;
-
-                    tempx = snake[0, 0];
-                    tempy = snake[0, 1];
-                }
-
-                snake[0, 0] = vectx;
-                snake[0, 1] = vecty;
-                /*
-                screen[corhy- vecty, corhx- vectx] = '*';
-                screen[cordendy, cordendx] = ' ';
-
-                if (screen[cordendy, cordendx + 1] =='*')
-                    cordendx++;
-
-                else if(screen[cordendy, cordendx - 1] == '*')
-                    cordendx--;
-
-                else if (screen[cordendy + 1, cordendx] == '*')
-                    cordendy++;
-
-                else
-                    cordendy--;
-
-                screen[cordendy, cordendx] = '*';
-                */
-                /*
-                for (int temp = snake_length; temp!=0;)
-                {
-                    int i = vectx, j = vecty;
-                    screen[corhy-j, corhx-i] = '*';
-                    i += vectx; j += vecty;
-                    temp--;
-                }
-                */
-
-                if (corhx == 0||corhy==0||corhx==screen.GetLength(1)-1||corhy==screen.GetLength(0) - 1)
-                    IsDead = true;
             }
+            Console.Beep();
         }
-        
+        static void UpdateScreen(ref char[,] Screen,in Snake[] body,int headx,int heady, int tailx, int taily)
+        {
+            Screen[heady, headx] = '%';
+            for (int i = 0; i < body.Length; i++)
+            {
+                Screen[taily, tailx] = '*';
+                tailx -= body[i].GetSvecx();
+                taily -= body[i].GetSvecy();
+            }
+
+            Screen[taily, tailx] = ' ';
+        }
         static void movement()
         {
             ConsoleKey key;
@@ -181,30 +185,38 @@ namespace GorbInuch
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.W:
+                        if (vecty == 1)
+                            break;
                         vectx = 0;
                         vecty = -1;
                         break;
 
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.S:
+                        if (vecty == -1)
+                            break;
                         vectx = 0;
                         vecty = 1;
                         break;
 
                     case ConsoleKey.RightArrow:
                     case ConsoleKey.D:
+                        if (vectx == -1)
+                            break;
                         vectx = 1;
                         vecty = 0;
                         break;
 
                     case ConsoleKey.LeftArrow:
                     case ConsoleKey.A:
+                        if (vectx == 1)
+                            break;
                         vectx = -1;
                         vecty = 0;
                         break;
 
                     case ConsoleKey.Escape:
-
+                        
                         break;
 
                     default:
@@ -213,8 +225,15 @@ namespace GorbInuch
                 }
             }
         }
-
-        static void SpawnApple(char[,] screen, int corhx, int corhy, out int corax, out int coray)
+        static void AppleEaten(ref Snake[] body)
+        {
+            Console.Beep();
+            Array.Resize<Snake>(ref body, body.Length + 1);
+            body[body.Length - 1] = new Snake();
+            body[body.Length - 1].SetSvecx(body[body.Length - 2].GetSvecx());
+            body[body.Length - 1].SetSvecy(body[body.Length - 2].GetSvecy());
+        }
+        static void SpawnApple(in char[,] screen, int corhx, int corhy, int slength, ref int corax, ref int coray)
         {
             Random rnd = new Random();
             bool Test = true;
@@ -225,25 +244,20 @@ namespace GorbInuch
             //проверка спавна яблока
             while (Test)
             {
-                if (corax == 0 || coray == 0 || corax == screen.GetLength(1) || coray == screen.GetLength(0))
+                //todo исправить баг если яблоко появляется в точке удаления хвоста
+                if (corax == 0 || coray == 0 || corax == screen.GetLength(0)-1 || coray == screen.GetLength(1) - 1 || screen[corax,coray]=='%'|| screen[corax, coray] == '*')
                 {
                     corax = rnd.Next(screen.GetLength(0));
                     coray = rnd.Next(screen.GetLength(1));
                     continue;
                 }
                
-                if (false)
-                {
-
-                    continue;
-                }
                 Test = false;
                 screen[corax, coray] = '@';
             }
-
         }
 
-        static void test(char[,] screen)
+        static void Show(in char[,] screen)
         {
             for (int i = 0; i < screen.GetLength(0); i++)
             {
@@ -253,7 +267,7 @@ namespace GorbInuch
                 }
                 Console.WriteLine();
             }
-            Thread.Sleep(400);
+            Thread.Sleep(200);
         }
         
     }
