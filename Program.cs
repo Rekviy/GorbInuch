@@ -137,16 +137,19 @@ namespace GorbInuch
 
                 heady += local_vecty;
                 headx += local_vectx;
+
+                if (screen[heady, headx] == '|' || screen[heady, headx] == '-' || screen[heady, headx] == '*')
+                    break;
+
+                UpdateScreen(ref screen, body, headx, heady, tailx, taily);
+
                 if (heady==appley&&headx==applex)
                 {
                     AppleEaten(ref body);
                     SpawnApple(ref screen,tailx,taily, out applex, out appley);
                     
                 }
-                if (screen[heady, headx] == '|' || screen[heady, headx] == '-' || screen[heady, headx] == '*')
-                    break;
-                UpdateScreen(ref screen, body, headx, heady, tailx, taily);
-
+                
                 sbyte tempx = body[0].GetSvecx(), tempy = body[0].GetSvecy();
                 sbyte temp;
                 for (int i = 1; i < body.Length; i++)
@@ -194,16 +197,16 @@ namespace GorbInuch
             Random rnd = new Random();
             bool Test = true;
             //корды яблока(Спавн)
-            applex = rnd.Next(0,screen.GetLength(1)-1);
-            appley = rnd.Next(0,screen.GetLength(0)-1);
+            applex = rnd.Next(1,screen.GetLength(1)-2);
+            appley = rnd.Next(1,screen.GetLength(0)-2);
 
             //проверка спавна яблока
             while (Test)
             {
-                if (screen[appley, applex] == '|' || screen[appley, applex] == '-' || screen[appley,applex]=='%'|| screen[appley, applex] == '*'||appley ==taily|| applex==tailx)
+                if (screen[appley,applex]=='%'|| screen[appley, applex] == '*'||appley ==taily|| applex==tailx)
                 {
-                    applex = rnd.Next(0, screen.GetLength(1) - 1);
-                    appley = rnd.Next(0, screen.GetLength(0) - 1);
+                    applex = rnd.Next(1, screen.GetLength(1) - 2);
+                    appley = rnd.Next(1, screen.GetLength(0) - 2);
                     continue;
                 }
                
