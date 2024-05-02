@@ -150,6 +150,7 @@ namespace GorbInuch
                     
                 }
                 
+
                 sbyte tempx = body[0].GetSvecx(), tempy = body[0].GetSvecy();
                 sbyte temp;
                 for (int i = 1; i < body.Length; i++)
@@ -195,24 +196,17 @@ namespace GorbInuch
         static void SpawnApple(ref char[,] screen, int tailx, int taily, out int applex, out int appley)
         {
             Random rnd = new Random();
-            bool Test = true;
             //корды яблока(Спавн)
             applex = rnd.Next(1,screen.GetLength(1)-2);
             appley = rnd.Next(1,screen.GetLength(0)-2);
 
             //проверка спавна яблока
-            while (Test)
+            while (screen[appley, applex] == '%' || screen[appley, applex] == '*' || appley == taily || applex == tailx)
             {
-                if (screen[appley,applex]=='%'|| screen[appley, applex] == '*'||appley ==taily|| applex==tailx)
-                {
-                    applex = rnd.Next(1, screen.GetLength(1) - 2);
-                    appley = rnd.Next(1, screen.GetLength(0) - 2);
-                    continue;
-                }
-               
-                Test = false;
-                screen[appley, applex] = '@';
+                applex = rnd.Next(1, screen.GetLength(1) - 2);
+                appley = rnd.Next(1, screen.GetLength(0) - 2);
             }
+            screen[appley, applex] = '@';
         }
 
         static void Show(in char[,] screen)
@@ -275,6 +269,7 @@ namespace GorbInuch
                         break;
 
                 }
+                Thread.Sleep(230);
             }
         }
     }
