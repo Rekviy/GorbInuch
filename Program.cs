@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,23 +14,17 @@ namespace GorbInuch
     class Snake
     {
         private sbyte Svecx = 1;
-        private sbyte Svecy = 0;
+        public sbyte Vectx
+        {
+            get {return Svecx;}
+            set {Svecx = value;}
+        }
 
-        public void SetSvecx(sbyte x)
+        private sbyte Svecy = 0;
+        public sbyte Vecty
         {
-            Svecx = x;
-        }
-        public void SetSvecy(sbyte y)
-        {
-            Svecy = y;
-        }
-        public sbyte GetSvecx()
-        {
-            return Svecx;
-        }
-        public sbyte GetSvecy()
-        {
-            return Svecy;
+            get {return Svecy;}
+            set {Svecy = value;}
         }
     }
     internal class Program
@@ -127,9 +122,13 @@ namespace GorbInuch
         static void gameplay(ref char[,] screen)
         {
             Initialization(ref screen, out Snake[] body, out int headx, out int heady, out int applex, out int appley, out int tailx, out int taily);
-                        
+#if DEBUG
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+#endif
             while (true)
             {
+                
                 Show(screen);
                 sbyte local_vectx = vectx, local_vecty = vecty;
                 tailx = headx;
@@ -151,24 +150,29 @@ namespace GorbInuch
                 }
                 
 
-                sbyte tempx = body[0].GetSvecx(), tempy = body[0].GetSvecy();
+                sbyte tempx = body[0].Vectx, tempy = body[0].Vecty;
                 sbyte temp;
                 for (int i = 1; i < body.Length; i++)
                 {
-                    temp = body[i].GetSvecx();
-                    body[i].SetSvecx(tempx);
+                    temp = body[i].Vectx;
+                    body[i].Vectx = tempx;
                     tempx = temp;
 
-                    temp = body[i].GetSvecy();
-                    body[i].SetSvecy(tempy);
+                    temp = body[i].Vecty;
+                    body[i].Vecty =tempy;
                     tempy = temp;
                 }
 
-                body[0].SetSvecx(local_vectx);
-                body[0].SetSvecy(local_vecty);
+                body[0].Vectx =local_vectx;
+                body[0].Vecty = local_vecty;
                 
                 
                 Console.Clear();
+#if DEBUG
+                sw.Stop();
+                Console.WriteLine(sw.ElapsedMilliseconds);
+                sw.Restart();
+#endif
             }
             Console.Beep();
         }
@@ -178,8 +182,8 @@ namespace GorbInuch
             for (int i = 0; i < body.Length; i++)
             {
                 Screen[taily, tailx] = '*';
-                tailx -= body[i].GetSvecx();
-                taily -= body[i].GetSvecy();
+                tailx -= body[i].Vectx;
+                taily -= body[i].Vecty;
             }
 
             Screen[taily, tailx] = ' ';
@@ -190,8 +194,8 @@ namespace GorbInuch
             Console.Beep();
             Array.Resize<Snake>(ref body, body.Length + 1);
             body[body.Length - 1] = new Snake();
-            body[body.Length - 1].SetSvecx(body[body.Length - 2].GetSvecx());
-            body[body.Length - 1].SetSvecy(body[body.Length - 2].GetSvecy());
+            body[body.Length - 1].Vectx = body[body.Length - 2].Vectx;
+            body[body.Length - 1].Vecty = body[body.Length - 2].Vecty;
         }
         static void SpawnApple(ref char[,] screen, int tailx, int taily, out int applex, out int appley)
         {
