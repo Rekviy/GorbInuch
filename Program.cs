@@ -31,6 +31,7 @@ namespace GorbInuch
     {
         // направление
         static sbyte vectx, vecty;
+        static int score = 0;
         static void Main(string[] args)
         {
             const int ScreenW = 20, ScreenH = 10;
@@ -43,15 +44,20 @@ namespace GorbInuch
             Console.CursorVisible = false;
             do
             {
+                score = 0;
+                ThreadInput.IsBackground = false;
                 gameplay(ref screen);
-
+                
                 Console.WriteLine("Game Over");//Временно
+                Console.WriteLine("Яблок съедено: "+score);
                 Console.WriteLine("Начать новую игру? Y/N");
+
+                ThreadInput.IsBackground = true;
             } while (Console.ReadKey(true).Key == ConsoleKey.Y);
             
         }
 
-        //Выводит экран с надписью змейка символами
+        //Будет выводить экран с надписью змейка символами
         static void WelcomeScreen()
         {
             char[,] WellScreen = new char[Console.WindowHeight, Console.WindowWidth];
@@ -144,6 +150,7 @@ namespace GorbInuch
 
                 if (heady==appley&&headx==applex)
                 {
+                    score++;
                     AppleEaten(ref body);
                     SpawnApple(ref screen,tailx,taily, out applex, out appley);
                     
@@ -152,6 +159,7 @@ namespace GorbInuch
 
                 sbyte tempx = body[0].Vectx, tempy = body[0].Vecty;
                 sbyte temp;
+                
                 for (int i = 1; i < body.Length; i++)
                 {
                     temp = body[i].Vectx;
@@ -227,11 +235,9 @@ namespace GorbInuch
         }
         static void movement()
         {
-            ConsoleKey key;
             while (true)
             {
-                key = Console.ReadKey(true).Key;
-                switch (key)
+                switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.W:
@@ -264,11 +270,8 @@ namespace GorbInuch
                         vectx = -1;
                         vecty = 0;
                         break;
-
                     case ConsoleKey.Escape:
-
-                        break;
-
+                        return;
                     default:
                         break;
 
