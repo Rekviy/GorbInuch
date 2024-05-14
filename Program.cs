@@ -11,27 +11,13 @@ using System.Xml.Serialization;
 
 namespace GorbInuch
 {
-    class Snake
-    {
-        private sbyte Svecx = 1;
-        public sbyte Vectx
-        {
-            get {return Svecx;}
-            set {Svecx = value;}
-        }
-
-        private sbyte Svecy = 0;
-        public sbyte Vecty
-        {
-            get {return Svecy;}
-            set {Svecy = value;}
-        }
-    }
+   
     internal class Program
     {
         // направление
         static sbyte vectx, vecty;
         static int score = 0;
+        static int GameSpeed = 100;
         static void Main(string[] args)
         {
             const int ScreenW = 20, ScreenH = 10;
@@ -47,10 +33,12 @@ namespace GorbInuch
                 score = 0;
                 ThreadInput.IsBackground = false;
                 gameplay(ref screen);
-                
-                Console.WriteLine("Game Over");//Временно
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nGame Over\n");//Временно
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Яблок съедено: "+score);
-                Console.WriteLine("Начать новую игру? Y/N");
+                Console.ResetColor();
+                Console.WriteLine("\nНачать новую игру? Y/N");
 
                 ThreadInput.IsBackground = true;
             } while (Console.ReadKey(true).Key == ConsoleKey.Y);
@@ -102,8 +90,10 @@ namespace GorbInuch
 
             int slength = 3;
             body = new Snake[slength];
-            for (int i = 0; i < body.Length; i++)
+            for (int i = 0; i < body.Length; i++){
                 body[i] = new Snake();
+                body[i].Vectx = 1;}
+                
 
             //корды спавна головы змеи
             headx = slength + 1;
@@ -120,8 +110,6 @@ namespace GorbInuch
             for (int i = 1; i <= slength; i++)
                 screen[heady, headx - i] = '*';
 
-            
-
             vectx = 1;
             vecty = 0;
         }
@@ -134,8 +122,7 @@ namespace GorbInuch
 #endif
             while (true)
             {
-                
-                Show(screen);
+                Show(screen,score);
                 sbyte local_vectx = vectx, local_vecty = vecty;
                 tailx = headx;
                 taily = heady;
@@ -147,15 +134,6 @@ namespace GorbInuch
                     break;
 
                 UpdateScreen(ref screen, body, headx, heady, tailx, taily);
-
-                if (heady==appley&&headx==applex)
-                {
-                    score++;
-                    AppleEaten(ref body);
-                    SpawnApple(ref screen,tailx,taily, out applex, out appley);
-                    
-                }
-                
 
                 sbyte tempx = body[0].Vectx, tempy = body[0].Vecty;
                 sbyte temp;
@@ -173,8 +151,12 @@ namespace GorbInuch
 
                 body[0].Vectx =local_vectx;
                 body[0].Vecty = local_vecty;
-                
-                
+
+                if (heady == appley && headx == applex){
+                    score++;
+                    AppleEaten(ref body);
+                    SpawnApple(ref screen, tailx, taily, out applex, out appley);}
+
                 Console.Clear();
 #if DEBUG
                 sw.Stop();
@@ -201,7 +183,6 @@ namespace GorbInuch
         {
             Console.Beep();
             Array.Resize<Snake>(ref body, body.Length + 1);
-            body[body.Length - 1] = new Snake();
             body[body.Length - 1].Vectx = body[body.Length - 2].Vectx;
             body[body.Length - 1].Vecty = body[body.Length - 2].Vecty;
         }
@@ -221,7 +202,7 @@ namespace GorbInuch
             screen[appley, applex] = '@';
         }
 
-        static void Show(in char[,] screen)
+        static void Show(in char[,] screen,in int score)
         {
             for (int i = 0; i < screen.GetLength(0); i++)
             {
@@ -231,7 +212,8 @@ namespace GorbInuch
                 }
                 Console.WriteLine();
             }
-            Thread.Sleep(200);
+            Console.WriteLine("Текущий счет: "+score);
+            Thread.Sleep(GameSpeed);
         }
         static void movement()
         {
@@ -276,7 +258,7 @@ namespace GorbInuch
                         break;
 
                 }
-                Thread.Sleep(230);
+                Thread.Sleep(GameSpeed+20);
             }
         }
     }
