@@ -90,9 +90,9 @@ namespace GorbInuch
 
             int slength = 3;
             body = new Snake[slength];
-            for (int i = 0; i < body.Length; i++){
-                body[i] = new Snake();
-                body[i].Vectx = 1;}
+            for (int i = 0; i < body.Length; i++)
+                body[i] = new Snake() {Vectx = 1};
+                
                 
 
             //корды спавна головы змеи
@@ -135,21 +135,13 @@ namespace GorbInuch
 
                 UpdateScreen(ref screen, body, headx, heady, tailx, taily);
 
-                sbyte tempx = body[0].Vectx, tempy = body[0].Vecty;
-                sbyte temp;
                 
-                for (int i = 1; i < body.Length; i++)
+                for (int i = body.Length-1; i > 0; i--)
                 {
-                    temp = body[i].Vectx;
-                    body[i].Vectx = tempx;
-                    tempx = temp;
-
-                    temp = body[i].Vecty;
-                    body[i].Vecty =tempy;
-                    tempy = temp;
+                    body[i].Vectx = body[i - 1].Vectx;
+                    body[i].Vecty = body[i - 1].Vecty;
                 }
-
-                body[0].Vectx =local_vectx;
+                body[0].Vectx = local_vectx;
                 body[0].Vecty = local_vecty;
 
                 if (heady == appley && headx == applex){
