@@ -250,7 +250,7 @@ namespace GorbInuch
                         break;
 
                 }
-                Thread.Sleep(GameSpeed+20);
+                Thread.Sleep(GameSpeed+30);
             }
         }
     }
