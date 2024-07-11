@@ -31,6 +31,7 @@ namespace GorbInuch
             do
             {
                 score = 0;
+                Console.Clear();
                 ThreadInput.IsBackground = false;
                 gameplay(ref screen);
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -147,9 +148,10 @@ namespace GorbInuch
                 if (heady == appley && headx == applex){
                     score++;
                     AppleEaten(ref body);
-                    SpawnApple(ref screen, tailx, taily, out applex, out appley);}
+                    SpawnApple(ref screen, tailx, taily, out applex, out appley);
+                }
 
-                Console.Clear();
+                
 #if DEBUG
                 sw.Stop();
                 Console.WriteLine(sw.ElapsedMilliseconds);
@@ -196,6 +198,7 @@ namespace GorbInuch
 
         static void Show(in char[,] screen,in int score)
         {
+            Console.SetCursorPosition(0, 0);
             for (int i = 0; i < screen.GetLength(0); i++)
             {
                 for (int j = 0; j < screen.GetLength(1); j++)
