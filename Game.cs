@@ -95,9 +95,6 @@ namespace GorbInuch
             tailx = 0;
             taily = 0;
 
-            //спавн яблока
-            SpawnApple(tailx,taily,out applex, out appley);
-
             //спавн змейки
             for (int i = 0;i < Snake.blength+1; i++)
             {
@@ -108,7 +105,9 @@ namespace GorbInuch
                     Console.Write(Snake.body);
             }
 
-            
+            //спавн яблока
+            SpawnApple(ref body, tailx, taily, out applex, out appley);
+
             vectx = 1;
             vecty = 0;
         }
@@ -147,7 +146,7 @@ namespace GorbInuch
                     if (Snake.blength == body.Length)
                         ExtendSnake(ref body);
                     Snake.blength++;
-                    SpawnApple(tailx, taily, out applex, out appley);
+                    SpawnApple(ref body,tailx, taily, out applex, out appley);
                 }
 
 
@@ -189,7 +188,7 @@ namespace GorbInuch
             body[Snake.blength-1].Vectx = body[Snake.blength].Vectx;
             body[Snake.blength-1].Vecty = body[Snake.blength].Vecty;
         }
-        static void SpawnApple(int tailx, int taily, out int applex, out int appley)
+        static void SpawnApple(ref Snake[] body, int tailx, int taily, out int applex, out int appley)
         {
             Random rnd = new Random();
             //корды яблока(Спавн)
@@ -197,7 +196,7 @@ namespace GorbInuch
             appley = rnd.Next(1,height-1);
 
             //проверка спавна яблока
-            while (ConsoleOut.CheckConsoleChar( (short)(applex), (short)(appley)) || appley == taily || applex == tailx)
+            while (ConsoleOut.CheckConsoleChar( (short)(applex), (short)(appley)) || appley == taily+body[Snake.blength-1].Vecty || applex == tailx + body[Snake.blength - 1].Vectx)
             {
                 applex = rnd.Next(1, width - 1);
                 appley = rnd.Next(1, height - 1);
