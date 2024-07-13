@@ -1,0 +1,46 @@
+﻿using System.Runtime.InteropServices;
+using System;
+
+namespace GorbInuch
+{
+    class ConsoleOut
+    {
+        public static bool CompareConsoleChar(char ch,short x, short y)
+        {
+            char[] readBuff = new char[1];
+            int ReadCount;
+            ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out ReadCount);
+            if (ch == readBuff[0])
+                return true;
+            return false;
+        }
+        public static bool CheckConsoleChar (short x, short y)
+        {
+            char[] readBuff = new char[1];
+            int ReadCount;
+            ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out ReadCount);
+            if (readBuff[0]=='\0')
+                return true;
+            return false;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct COORD
+        {
+            public short X;
+            public short Y;
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool ReadConsoleOutputCharacter(
+        IntPtr hConsoleOutput,
+        [Out] char[] lpCharacter,
+        int nLength,
+        COORD dwReadCoord,
+        out int lpNumberOfCharsRead);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+    }
+}

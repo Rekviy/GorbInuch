@@ -8,18 +8,26 @@ namespace GorbInuch
 {
     struct Snake
     {
-        private sbyte Svecx;
-        public sbyte Vectx
-        {
-            get { return Svecx; }
-            set { Svecx = value; }
-        }
+        public static char head { get; set; }
+        public static char body { get; set; }
+        public static int blength { get; set; }
+        public static int headx { get; set; }
+        public static int heady { get; set; }
+        public sbyte Vectx { get; set; }
+        public sbyte Vecty { get; set; }
 
-        private sbyte Svecy;
-        public sbyte Vecty
+        public Snake(sbyte vectx, sbyte vecty)
         {
-            get { return Svecy; }
-            set { Svecy = value; }
+            this.Vectx = vectx;
+            this.Vecty = vecty;
+        }
+        public static void Settings(int headx, int heady,int blength = 3,char head = '%',char body = '*')
+        {
+            Snake.head = head;
+            Snake.body = body;
+            Snake.headx = headx;
+            Snake.heady = heady;
+            Snake.blength = blength;
         }
     }
 }
