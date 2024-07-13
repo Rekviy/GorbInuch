@@ -19,9 +19,9 @@ namespace GorbInuch
             char[] readBuff = new char[1];
             int ReadCount;
             ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out ReadCount);
-            if (readBuff[0]=='\0')
-                return true;
-            return false;
+            if (readBuff[0]==' ')
+                return false;
+            return true;
         }
 
 

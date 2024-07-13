@@ -198,7 +198,6 @@ namespace GorbInuch
 
             //проверка спавна яблока
             while (ConsoleOut.CheckConsoleChar( (short)(applex), (short)(appley)) || appley == taily || applex == tailx)
-
             {
                 applex = rnd.Next(1, width - 1);
                 appley = rnd.Next(1, height - 1);
