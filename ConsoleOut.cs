@@ -8,8 +8,8 @@ namespace GorbInuch
         public static bool CompareConsoleChar(char ch,short x, short y)
         {
             char[] readBuff = new char[1];
-            int ReadCount;
-            ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out ReadCount);
+
+            ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out int ReadCount);
             if (ch == readBuff[0])
                 return true;
             return false;
@@ -17,8 +17,8 @@ namespace GorbInuch
         public static bool CheckConsoleChar (short x, short y)
         {
             char[] readBuff = new char[1];
-            int ReadCount;
-            ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out ReadCount);
+            
+            ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out int ReadCount);
             if (readBuff[0]==' ')
                 return false;
             return true;
