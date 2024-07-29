@@ -85,10 +85,10 @@ namespace GorbInuch
                 }
             }
             //временно
-            Snake.blength = 3;
-            Snake.Settings((short)(Snake.blength + 1),(short)(height / 2));
+            Snake.Body_Length = 3;
+            Snake.Settings((short)(Snake.Body_Length + 1),(short)(height / 2));
             
-            body = new Snake[Snake.blength+5];
+            body = new Snake[Snake.Body_Length+5];
             for (int i = 0; i < body.Length; i++)
                 body[i] = new Snake(1,0);
             
@@ -97,13 +97,13 @@ namespace GorbInuch
             taily = 0;
 
             //спавн змейки
-            for (int i = 0;i < Snake.blength+1; i++)
+            for (int i = 0;i < Snake.Body_Length+1; i++)
             {
-                Console.SetCursorPosition(Snake.headx-i, Snake.heady);
+                Console.SetCursorPosition(Snake.HeadX-i, Snake.HeadY);
                 if (i==0)
-                    Console.Write(Snake.head);
+                    Console.Write(Snake.Head);
                 else
-                    Console.Write(Snake.body);
+                    Console.Write(Snake.Body);
             }
 
             //спавн яблока
@@ -127,40 +127,40 @@ namespace GorbInuch
                 
                 sbyte local_vectx = vectx, local_vecty = vecty;
 
-                tailx = Snake.headx;
-                taily = Snake.heady;
+                tailx = Snake.HeadX;
+                taily = Snake.HeadY;
 
-                Snake.heady += local_vecty;
-                Snake.headx += local_vectx;
+                Snake.HeadY += local_vecty;
+                Snake.HeadX += local_vectx;
 
                 
-                if (Snake.headx == 0 || Snake.headx == width-1 || Snake.heady == height-1 || Snake.heady == 1 ||
-                    ConsoleOut.CompareConsoleChar('*',Snake.headx,Snake.heady))
+                if (Snake.HeadX == 0 || Snake.HeadX == width-1 || Snake.HeadY == height-1 || Snake.HeadY == 1 ||
+                    ConsoleOut.CompareConsoleChar('*',Snake.HeadX,Snake.HeadY))
                     break;
                 
                 UpdateScreen(body, tailx, taily);
 
 
-
-                if (Snake.heady == appley && Snake.headx == applex)
+                if (Snake.HeadY == appley && Snake.HeadX == applex)
                 {
                     //beep generates 200ms delay
                     //Console.Beep();
                     score++;
-                    if (Snake.blength == body.Length)
-                        ExtendSnake(ref body);
-                    Snake.blength++;
+                    if (Snake.Body_Length == body.Length)
+                        Snake.ExtendSnake(ref body);
+
+                    Snake.Body_Length++;
                     SpawnApple(ref body,tailx, taily, out applex, out appley);
                 }
 
                 
-                for (int i = Snake.blength - 1; i > 0; i--)
+                for (int i = Snake.Body_Length - 1; i > 0; i--)
                 {
-                    body[i].Vectx = body[i - 1].Vectx;
-                    body[i].Vecty = body[i - 1].Vecty;
+                    body[i].VectX = body[i - 1].VectX;
+                    body[i].VectY = body[i - 1].VectY;
                 }
-                body[0].Vectx = local_vectx;
-                body[0].Vecty = local_vecty;
+                body[0].VectX = local_vectx;
+                body[0].VectY = local_vecty;
 
 #if DEBUG
                 sw.Stop();
@@ -174,25 +174,20 @@ namespace GorbInuch
         }
         static void UpdateScreen(in Snake[] body, int tailx, int taily)
         {
-            Console.SetCursorPosition(Snake.headx,Snake.heady);
-            Console.Write(Snake.head);
-            for (int i = 0; i < Snake.blength; i++)
+            Console.SetCursorPosition(Snake.HeadX,Snake.HeadY);
+            Console.Write(Snake.Head);
+            for (int i = 0; i < Snake.Body_Length; i++)
             {
                 Console.SetCursorPosition(tailx, taily);
-                Console.Write(Snake.body);
-                tailx -= body[i].Vectx;
-                taily -= body[i].Vecty;
+                Console.Write(Snake.Body);
+                tailx -= body[i].VectX;
+                taily -= body[i].VectY;
             }
             Console.SetCursorPosition(tailx , taily);
             Console.Write(' ');
         }
         
-        static void ExtendSnake(ref Snake[] body)
-        {
-            Array.Resize<Snake>(ref body, body.Length + 10);
-            body[Snake.blength-1].Vectx = body[Snake.blength].Vectx;
-            body[Snake.blength-1].Vecty = body[Snake.blength].Vecty;
-        }
+        
         static void SpawnApple(ref Snake[] body, short tailx, short taily, out short applex, out short appley)
         {
 
@@ -202,7 +197,7 @@ namespace GorbInuch
             appley = (short) rnd.Next(1,height-1);
 
             //проверка спавна яблока
-            while (ConsoleOut.CheckConsoleChar(applex, appley) || appley == taily+body[Snake.blength-1].Vecty || applex == tailx + body[Snake.blength - 1].Vectx)
+            while (ConsoleOut.CheckConsoleChar(applex, appley) || appley == taily+body[Snake.Body_Length-1].VectY || applex == tailx + body[Snake.Body_Length - 1].VectX)
             {
                 applex = (short) rnd.Next(1, width - 1);
                 appley = (short) rnd.Next(1, height - 1);

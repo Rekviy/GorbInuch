@@ -8,26 +8,33 @@ namespace GorbInuch
 {
     struct Snake
     {
-        public static char head { get; set; }
-        public static char body { get; set; }
-        public static int blength { get; set; }
-        public static short headx { get; set; }
-        public static short heady { get; set; }
-        public sbyte Vectx { get; set; }
-        public sbyte Vecty { get; set; }
+        public static short HeadX { get; set; }
+        public static short HeadY { get; set; }
+        public sbyte VectX { get; set; }
+        public sbyte VectY { get; set; }
+        public static int Body_Length { get; set; }
+
+        public static char Head { get;private set; }
+        public static char Body { get; private set; }
 
         public Snake(sbyte vectx, sbyte vecty)
         {
-            this.Vectx = vectx;
-            this.Vecty = vecty;
+            this.VectX = vectx;
+            this.VectY = vecty;
         }
-        public static void Settings(short headx, short heady,int blength = 3,char head = '%',char body = '*')
+        public static void Settings(short HeadX, short HeadY,int BodyLength = 3,char Head = '%',char Body = '*')
         {
-            Snake.head = head;
-            Snake.body = body;
-            Snake.headx = headx;
-            Snake.heady = heady;
-            Snake.blength = blength;
+            Snake.Head = Head;
+            Snake.Body = Body;
+            Snake.HeadX = HeadX;
+            Snake.HeadY = HeadY;
+            Snake.Body_Length = BodyLength;
+        }
+        public static void ExtendSnake(ref Snake[] body)
+        {
+            Array.Resize<Snake>(ref body, body.Length + 10);
+            body[Snake.Body_Length - 1].VectX = body[Snake.Body_Length].VectX;
+            body[Snake.Body_Length - 1].VectY = body[Snake.Body_Length].VectY;
         }
     }
 }
