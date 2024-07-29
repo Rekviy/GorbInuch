@@ -164,8 +164,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Settings.cs" />
-    <Compile Include="ConsoleOut.cs" />
+    <Compile Include="Entrance.cs" />
+    <Compile Include="Utils\Settings.cs" />
+    <Compile Include="Utils\ConsoleOut.cs" />
     <Compile Include="Snake.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

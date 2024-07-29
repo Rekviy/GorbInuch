@@ -10,12 +10,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using BenchmarkDotNet;
 
 namespace GorbInuch
 {
 
-    internal class Game
+    public class Game
     {
         // направление
         static sbyte vectx, vecty;
@@ -23,13 +22,11 @@ namespace GorbInuch
         static int Delay = 100;
         public static short height { get; set; } = 10+1;//1 for score
         public static short width { get; set; } = 20;
-        static void Main(string[] args)
+        public static void Start()
         {
             Thread ThreadInput = new Thread(movement);
             ThreadInput.Start();
 
-            
-            
             //удаление курсора
             Console.CursorVisible = false;
             do
@@ -50,27 +47,6 @@ namespace GorbInuch
             
         }
 
-        //Будет выводить экран с надписью змейка символами
-        static void WelcomeScreen()
-        {
-            char[,] WellScreen = new char[Console.WindowHeight, Console.WindowWidth];
-
-            for (int i = 0; i < WellScreen.GetLength(0); i++)
-            {
-                for (int j = 0; j < WellScreen.GetLength(1); j++)
-                {
-
-
-
-
-
-                    WellScreen[i, j] = ' '; 
-                }
-                Thread.Sleep(300);
-            }
-            
-        }
-        
         static void Initialization(out Snake[] body,out short applex,out short appley, out short tailx,out short taily)
         {
             Console.CursorTop = 1;
