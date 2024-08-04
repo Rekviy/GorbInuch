@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using System;
 
-namespace GorbInuch
+namespace GorbInuch.Utils
 {
     class ConsoleOut
     {
-        public static bool CompareConsoleChar(char ch,short x, short y)
+        public static bool CompareConsoleChar(char ch, short x, short y)
         {
             char[] readBuff = new char[1];
 
@@ -14,12 +14,12 @@ namespace GorbInuch
                 return true;
             return false;
         }
-        public static bool CheckConsoleChar (short x, short y)
+        public static bool CheckConsoleChar(short x, short y)
         {
             char[] readBuff = new char[1];
-            
+
             ReadConsoleOutputCharacter(GetStdHandle(-11), readBuff, 1, new COORD { X = x, Y = y }, out int ReadCount);
-            if (readBuff[0]==' ')
+            if (readBuff[0] == ' ')
                 return false;
             return true;
         }
