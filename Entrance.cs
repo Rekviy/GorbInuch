@@ -11,12 +11,14 @@ namespace GorbInuch
     {
         static void Main()
         {
+            Console.Title = "GorbInuch";
             Settings.LoadSettings();
             #region Welcome Screen
             Console.WriteLine(
                 ""
                 );
             #endregion
+            UI.MainMenu();
             Game.Start();
             Settings.SaveSettings();
         }

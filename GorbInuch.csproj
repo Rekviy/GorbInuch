@@ -166,6 +166,7 @@
   <ItemGroup>
     <Compile Include="Classes\Apple.cs" />
     <Compile Include="Entrance.cs" />
+    <Compile Include="UI.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\ConsoleOut.cs" />
     <Compile Include="Classes\Snake.cs" />

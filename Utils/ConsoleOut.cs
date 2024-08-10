@@ -3,7 +3,7 @@ using System;
 
 namespace GorbInuch.Utils
 {
-    class ConsoleOut
+    static class ConsoleOut
     {
         public static bool CompareConsoleChar(char ch, short x, short y)
         {

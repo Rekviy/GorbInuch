@@ -12,7 +12,7 @@ namespace GorbInuch.Utils
     {
         private static string dir = Directory.GetCurrentDirectory()+@"\data\";
         private static string file = "settings.txt";
-     
+        
         public static void SaveSettings()
         {
             if (!Directory.Exists(dir))
@@ -21,7 +21,7 @@ namespace GorbInuch.Utils
             sb.Append(Snake.Body_Length + ";");
             sb.Append(Snake.Head + ";");
             sb.Append(Snake.Body + ";");
-            sb.Append((Game.Height-1) + ";");
+            sb.Append(Game.Height + ";");
             sb.Append(Game.Width + ";");
             File.WriteAllText(dir+file, sb.ToString());
         }
@@ -43,6 +43,14 @@ namespace GorbInuch.Utils
                 Game.Height = 10;
                 Game.Width = 20;
             }
+        }
+        public static void ChangeWindowSize()
+        {
+            Console.WriteLine(Console.BufferHeight+" "+ Console.BufferWidth+"\n"+ Console.WindowHeight + " " + Console.WindowWidth);
+            
+            //Console.SetBufferSize(Game.Width, Game.Height + 1);
+            //Console.SetWindowSize(Game.Width, Game.Height + 1);
+
         }
     }
 }

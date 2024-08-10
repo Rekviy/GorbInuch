@@ -26,21 +26,21 @@ namespace GorbInuch
         private static short height;
         public static short Height
         { 
-            get {  return height; }
+            get {  return (short) (height - 1); }
             set { height = (short)(value + 1); }
         }
         public static short Width { get; set; } = 20;
-        public static void Delay(string difficulty)
+        public static void Delay(int difficulty)
         {
-            switch(difficulty.ToLower())
+            switch(difficulty)
             {
-                case "easy":
+                case 1:
                     delay = 150;
                     break;
-                case "medium":
+                case 2:
                     delay = 120;
                     break;
-                case "hard":
+                case 3:
                     delay = 80;
                     break;
 
